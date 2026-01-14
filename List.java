@@ -30,20 +30,34 @@ public class List {
 
     /** GIVE Adds a CharData object with the given character to the beginning of this list. */
     public void addFirst(char chr) {
-        // Your code goes here
+        CharData charData = new CharData(chr);
+        first = new Node(charData, first);
     }
     
     /** GIVE Textual representation of this list. */
     public String toString() {
-        // Your code goes here
-        return "";
+        String str = "";
+        Node current = first;
+        while (current !=  null) {
+            str = str + current.toString();
+            current = current.next;
+        }
+        return str;
     }
 
     /** Returns the index of the first CharData object in this list
      *  that has the same chr value as the given char,
      *  or -1 if there is no such object in this list. */
     public int indexOf(char chr) {
-        // Your code goes here
+        Node current = first;
+        int index = 0;
+        while (current != null) {
+            if(current.cp.equals(chr))
+                return index;
+            index++;
+            current = current.next;
+        }
+        
         return -1;
     }
 
@@ -51,22 +65,53 @@ public class List {
      *  increments its counter. Otherwise, adds a new CharData object with the
      *  given chr to the beginning of this list. */
     public void update(char chr) {
-        // Your code goes here
+        Node current = first;
+        while (current != null) {
+            if(current.cp.equals(chr)){
+                current.cp.count++;
+                return;
+            }
+            current = current.next;  
+        }
+        addFirst(chr);
+
     }
 
     /** GIVE If the given character exists in one of the CharData objects
      *  in this list, removes this CharData object from the list and returns
      *  true. Otherwise, returns false. */
     public boolean remove(char chr) {
-        // Your code goes here
-        return false;
+        Node prev = null, current = first;
+        while (current != null && !current.cp.equals(chr)) {
+            prev = current;
+            current = current.next;
+    }
+        if (current == null) return false; // not found
+    // Remove the elements. If it's the first element, updates first
+    if (prev == null) { // it's the first element
+    first = first.next;
+    }
+    else {
+    prev.next = current.next;
+    }
+    return true;
+
     }
 
     /** Returns the CharData object at the specified index in this list. 
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
     public CharData get(int index) {
-        // Your code goes here
+        int i = 0;
+        Node currNode = first;
+        while (currNode != null) {
+            if(i == index)
+                return first.cp;
+            i++;
+            currNode = currNode.next;
+        }
+         if(index < 0 || i < index)
+            throw new IndexOutOfBoundsException();
         return null;
     }
 
