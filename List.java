@@ -32,6 +32,7 @@ public class List {
     public void addFirst(char chr) {
         CharData charData = new CharData(chr);
         first = new Node(charData, first);
+        size++;
     }
     
     /** GIVE Textual representation of this list. */
@@ -94,6 +95,7 @@ public class List {
     else {
     prev.next = current.next;
     }
+    size--;
     return true;
 
     }
@@ -102,16 +104,17 @@ public class List {
      *  If the index is negative or is greater than the size of this list, 
      *  throws an IndexOutOfBoundsException. */
     public CharData get(int index) {
+             if(index < 0 || size < index)
+            throw new IndexOutOfBoundsException();
         int i = 0;
         Node currNode = first;
         while (currNode != null) {
             if(i == index)
-                return first.cp;
+                return currNode.cp;
             i++;
             currNode = currNode.next;
         }
-         if(index < 0 || i < index)
-            throw new IndexOutOfBoundsException();
+    
         return null;
     }
 
