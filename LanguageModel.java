@@ -35,7 +35,7 @@ public class LanguageModel {
 	public void train(String fileName) {
 		In in = new In(fileName);
         String corpus = in.readAll();
-        corpus = corpus.replaceAll("\\r\\n", " ").replaceAll("\\n", " ").replaceAll("\\r", " ");
+        corpus = corpus.replaceAll("\\r\\n", " ").replaceAll("\\n", "\\n");
         for(int i = 0; i < corpus.length() - windowLength; i++){
             String subString = corpus.substring(i, i + windowLength);
             if(CharDataMap.containsKey(subString)){
