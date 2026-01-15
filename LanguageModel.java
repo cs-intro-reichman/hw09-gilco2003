@@ -35,6 +35,7 @@ public class LanguageModel {
 	public void train(String fileName) {
 		In in = new In(fileName);
         String corpus = in.readAll();
+        corpus = corpus.replaceAll("\\r\\n", " ").replaceAll("\\n", " ").replaceAll("\\r", " ");
         for(int i = 0; i < corpus.length() - windowLength; i++){
             String subString = corpus.substring(i, i + windowLength);
             if(CharDataMap.containsKey(subString)){
@@ -47,6 +48,10 @@ public class LanguageModel {
                 list.addFirst(corpus.charAt(i + windowLength));
                 CharDataMap.put(subString, list);
             }
+        }
+        for(List list : CharDataMap.values()){
+            calculateProbabilities(list);
+
         }
         }
 	
@@ -64,7 +69,7 @@ public class LanguageModel {
         current = iterator.current;
         iterator.current.cp.p = (double)iterator.current.cp.count / totalCount;
         iterator.current.cp.cp = iterator.current.cp.p;
-        while (iterator.hasNext()) {
+        while (iterator.current.next != null) {
             iterator.current.next.cp.p = (double)iterator.current.next.cp.count/ totalCount;
             iterator.current.next.cp.cp = iterator.current.cp.cp +   iterator.current.next.cp.p;
             iterator.current = iterator.current.next;
@@ -75,8 +80,9 @@ public class LanguageModel {
 	char getRandomChar(List probs) {
 		ListIterator listIterator =  probs.listIterator(0);
         Node current = listIterator.current;
+        double rand = randomGenerator.nextDouble();
         while (current != null) {
-            if(current.cp.cp >= randomGenerator.nextDouble())
+            if(current.cp.cp >= rand)
                 return current.cp.chr;
             current = current.next;
             
