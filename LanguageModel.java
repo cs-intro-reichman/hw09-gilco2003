@@ -35,9 +35,22 @@ public class LanguageModel {
 	public void train(String fileName) {
 		In in = new In(fileName);
         String corpus = in.readAll();
-        corpus = corpus.replaceAll("\\r\\n", " ").replaceAll("\\n", "\\n");
+        
         for(int i = 0; i < corpus.length() - windowLength; i++){
             String subString = corpus.substring(i, i + windowLength);
+            if (corpus.charAt(i) == '\r') {
+        continue;
+    }
+    
+        if (corpus.charAt(i + windowLength) == '\r') {
+        continue;
+     }
+
+     subString = corpus.substring(i, i + windowLength);
+    
+    if (subString.indexOf('\r') != -1) {
+        continue;
+    }
             if(CharDataMap.containsKey(subString)){
                 List temp = CharDataMap.get(subString);
                 temp.update(corpus.charAt(i + windowLength));
@@ -99,14 +112,23 @@ public class LanguageModel {
 	 * @return the generated text
 	 */
 	public String generate(String initialText, int textLength) {
-		String newTxt = initialText, window = initialText;
-        for(int i = 0; i < textLength; i++) {
-            window = newTxt.substring(newTxt.length() - window.length());
-            char c = getRandomChar(CharDataMap.get(window));
-            newTxt += c;
+		if (initialText.length() < windowLength) {
+        return initialText;
+    }
+
+    String generatedText = initialText;    
+    while (generatedText.length() < textLength) {
+        String window = generatedText.substring(generatedText.length() - windowLength);
+        List probs = CharDataMap.get(window);        
+        if (probs == null) {
+            break;
         }
-        return newTxt;
-	}
+        
+        char c = getRandomChar(probs);
+        generatedText += c;
+    }
+    return generatedText;
+}
 
     /** Returns a string representing the map of this language model. */
 	public String toString() {

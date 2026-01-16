@@ -44,7 +44,6 @@ public class List {
             current = current.next;
         }
         str = str + current.toString() + ")";
-
         return str;
     }
 
