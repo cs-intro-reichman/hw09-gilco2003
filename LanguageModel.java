@@ -117,7 +117,8 @@ public class LanguageModel {
     }
 
     String generatedText = initialText;    
-    while (generatedText.length() < textLength) {
+    boolean lastWordFinished = false;
+    while (generatedText.length() < textLength || !lastWordFinished ) {
         String window = generatedText.substring(generatedText.length() - windowLength);
         List probs = CharDataMap.get(window);        
         if (probs == null) {
@@ -125,8 +126,11 @@ public class LanguageModel {
         }
         
         char c = getRandomChar(probs);
+        lastWordFinished = generatedText.length() >= textLength && c !=  ' ';
+        if(!lastWordFinished)
         generatedText += c;
     }
+
     return generatedText;
 }
 
